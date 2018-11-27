@@ -1,0 +1,8 @@
+<h1>This is the campgrounds page</h1>
+
+<%campgroundsArray.forEach(function(campground){ %>
+	<div>
+		<h4><%= campground.title %></h4>
+		<img src="<%=campground.image%>">
+	</div>
+<%}); %>
