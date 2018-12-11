@@ -2,37 +2,68 @@ let port = 1337;
 let express = require("express");
 let app = express();
 let bodyParser = require("body-parser");
+let mongoose = require("mongoose");
 
 
-//Temporary array for campground data. Delete once DB is implemented
-let campgroundsArray = [
-	{title: "First Title", image: "https://images.unsplash.com/photo-1496545672447-f699b503d270?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=ba3fa37b995a705a01d022cada13f726&auto=format&fit=crop&w=1051&q=80"},
-	{title: "Second Title", image: "https://images.unsplash.com/photo-1487730116645-74489c95b41b?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=aa6e65fcad07b9a68420c430034f84f2&auto=format&fit=crop&w=1050&q=80"},
-	{title: "Third Title", image: "https://images.unsplash.com/photo-1537565266759-34bbc16be345?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=cf61f7387cf2cb8758d724978fcbd198&auto=format&fit=crop&w=1050&q=80"}
-];
 
+mongoose.connect("mongodb+srv://jonathanemiranda:jaxheW-fowsyt-vyhqo8@jonathanemiranda-ozsyo.mongodb.net/YelpCamp?retryWrites=true");
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 
+
+
+//SCHEMA SETUP
+let campgroundSchema = new mongoose.Schema({
+	name: String,
+	image: String
+});
+
+let Campground = mongoose.model("Campground", campgroundSchema);
+
+
+//Landing Page Route
 app.get("/", function(req, res){
 	res.render("index");
 });
 
+//INDEX - Show all campgrounds
 app.get("/campgrounds", function(req, res){
-	res.render("campgrounds", {campgroundsArray: campgroundsArray});
+	//GET ALL CAMPGROUNDS FROM DB
+	Campground.find({}, function(err, allCampgrounds){
+		if(err){
+			console.log(err);
+		}
+		else{
+			res.render("campgrounds", {campgroundsArray: allCampgrounds});			
+		}
+	});
+
 });
 
+//CREATE - Add new campground to DB
 app.post("/campgrounds", function(req, res){
 	let newName = req.body.newName;
 	let newImage = req.body.newImage;
-	let newCampground = {title: newName, image: newImage};
-	campgroundsArray.push(newCampground);
-	res.redirect("/campgrounds");
-	console.log(campgroundsArray);
+	let newCampground = {name: newName, image: newImage};
+	//CREATE A NEW CAMPGROUND AND SAVE TO DB
+	Campground.create(newCampground, function(err, newlyCreated){
+		if(err){
+			console.log(err);
+		}
+		else{
+			res.redirect("/campgrounds");
+		}
+	});
 });
 
+//NEW - Show form to create new campground
 app.get("/campgrounds/new", function(req, res){
 	res.render("newCampground");
+});
+
+//SHOW
+app.get("/campgrounds/:id", function(req, res){
+	res.send("This will be the show page");
 });
 
 
