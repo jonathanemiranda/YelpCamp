@@ -3,6 +3,7 @@ let express = require("express");
 let app = express();
 let bodyParser = require("body-parser");
 let mongoose = require("mongoose");
+let Campground = require("./models/campground");
 
 
 
@@ -10,16 +11,6 @@ mongoose.connect("mongodb+srv://jonathanemiranda:jaxheW-fowsyt-vyhqo8@jonathanem
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 
-
-
-//SCHEMA SETUP
-let campgroundSchema = new mongoose.Schema({
-	name: String,
-	image: String, 
-	description: String
-});
-
-let Campground = mongoose.model("Campground", campgroundSchema);
 
 
 //Landing Page Route
