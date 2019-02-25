@@ -4,6 +4,7 @@ let app = express();
 let bodyParser = require("body-parser");
 let mongoose = require("mongoose");
 let Campground = require("./models/campground");
+let seedDB = require("./seeds");
 
 
 
@@ -11,7 +12,7 @@ mongoose.connect("mongodb+srv://jonathanemiranda:jaxheW-fowsyt-vyhqo8@jonathanem
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 
-
+seedDB();
 
 //Landing Page Route
 app.get("/", function(req, res){
@@ -57,7 +58,7 @@ app.get("/campgrounds/new", function(req, res){
 //SHOW - Shows details about a single campground
 app.get("/campgrounds/:id", function(req, res){
 	//FIND THE CAMPGROUND
-	Campground.findById(req.params.id, function(err, foundCampground){
+	Campground.findById(req.params.id).populate("comments").exec(function(err, foundCampground){
 		if(err){
 			console.log(err);
 		}
@@ -74,3 +75,14 @@ app.get("/campgrounds/:id", function(req, res){
 app.listen(port, function(){
 	console.log("The YelpCamp Server Has Started");
 });
+
+
+
+
+
+
+
+
+
+
+
