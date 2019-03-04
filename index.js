@@ -4,6 +4,7 @@ let app = express();
 let bodyParser = require("body-parser");
 let mongoose = require("mongoose");
 let Campground = require("./models/campground");
+let Comment = require("./models/comment");
 let seedDB = require("./seeds");
 
 
@@ -86,6 +87,25 @@ app.get("/campgrounds/:id/comments/new", function(req, res){
 	
 })
 
+app.post("/campgrounds/:id/comments", function(req, res){
+	Campground.findById(req.params.id, function(err, campground){
+		if(err){
+			console.log(err);
+		}
+		else{
+			Comment.create(req.body.comment, function(err, comment){
+				if(err){
+					console.log(err);
+				}
+				else{
+					campground.comments.push(comment);
+					campground.save();
+					res.redirect("/campgrounds/" + req.params.id);
+				}
+			});
+		}
+	})
+});
 
 
 
