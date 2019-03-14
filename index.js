@@ -12,7 +12,7 @@ let seedDB = require("./seeds");
 mongoose.connect("mongodb+srv://jonathanemiranda:jaxheW-fowsyt-vyhqo8@jonathanemiranda-ozsyo.mongodb.net/YelpCamp?retryWrites=true");
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
-
+app.use(express.static(__dirname + "/public"));
 seedDB();
 
 //Landing Page Route
